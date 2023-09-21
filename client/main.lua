@@ -83,6 +83,8 @@ function OnUseItem(item)
         isArmour = false
         isAnimation = true
 
+        TriggerServerEvent(script_name .. ':removeItem', item)
+
         local status, err = pcall(function()
             Config.CustomProgressbarOnUseItem(item)
         end)
