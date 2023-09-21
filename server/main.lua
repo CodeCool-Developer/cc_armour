@@ -35,3 +35,16 @@ if not Config.ClientUseItem then
         end)
     end
 end
+
+RegisterServerEvent(script_name .. ':removeItem')
+AddEventHandler(script_name .. ':removeItem', function(item)
+    local xPlayer = ESX.GetPlayerFromId(source)
+        
+    if xPlayer == nil then
+        return
+    end
+        
+    if item.ItemName ~= nil and item.ItemName ~= '' and item.ItemCount > 0 then
+        xPlayer.removeInventoryItem(item.ItemName, item.ItemCount)
+    end
+end)
