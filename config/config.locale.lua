@@ -6,8 +6,8 @@
 ---   ╚═════╝   ╚═════╝    ╚═════╝  ╚═════╝   ╚══╝   ╚═════╝ ╚═════╝ ╚════╝  ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝ --
 --- Project : CC Premium Armour Suit
 --- Auth : CodeCool Developer
---- Website : https://fivem.codecool.xyz
 --- Discord : https://discord.gg/K7PDe2jfpW
+--- Website : https://fivem.cc-developer.com
 
 Config.Locale = {
 	GAME = {
