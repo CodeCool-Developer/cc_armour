@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'CodeCool Developer'
 description 'CC Premium Armour Suit'
-version '1.0.0'
+version '1.1.1'
 
 shared_script {
     'config/config.general.lua',

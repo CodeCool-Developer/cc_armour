@@ -29,13 +29,9 @@ Config.ClientUseItem = true                             -- เปิดใช้
 --- ตัวอย่าง
 --[[
 Config.ClientWillUseItem = function(itemName, itemType, shortcut)
-    Citizen.CreateThread(function()
-        if itemType == 'item' then
-            pcall(function()
-                exports.cc_armour:OnUseItem(itemName)
-            end)
-        end
-    end)
+    if GetResourceState('cc_armour') ~= "missing" then
+		return exports.cc_armour:OnUseItem(itemName)
+	end
     return true
 end
 ]]--
@@ -47,11 +43,11 @@ Config.Animation = {                                    -- Custom Animation ข�
 
 Config.ItemUse = {
     {
-        ItemName = 'bandage',                           -- ชื่อไอเทมกดใช้งาน
+        ItemName = 'job_w_stone',                       -- ชื่อไอเทมกดใช้งาน
         ItemCount = 1,                                  -- จำนวนไอเทมที่ต้องใช้
         ArmourHealth = 100,                             -- ค่าเกราะที่ต้องการให้เพิ่มหลังใช้งาน
         AnimDuration = 3000,                            -- เวลาในการทำ Animation สวมเสื้อเกราะ
-        LoadingLabel = 'กำลังสวมเกราะน้า',                  -- ข้อความหลอดโหลดขณะกำลังสวมเสื้อเกราะ
+        LoadingLabel = 'กำลังสวมเกราะน้า',                   -- ข้อความหลอดโหลดขณะกำลังสวมเสื้อเกราะ
         Jobs = {
             type = 'blacklist',                         -- ชนิดของ List ที่ต้องการ (whitelist|blacklist)
             list = {

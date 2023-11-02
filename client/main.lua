@@ -21,6 +21,14 @@ exports('OnUseItem', function(ItemName)
         return false
     end
 
+    if isAnimation then
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[4].title, Config.Locale.GAME.message_error[4].description)
+        end)
+        logError('ClientOnNotify', err)
+        return false
+    end
+
     if not CheckItemPermission(item) then
         return false
     end
@@ -41,61 +49,54 @@ RegisterNetEvent(script_name .. ':onUseItem', function(item)
 end)
 
 function OnUseItem(item)
-    if isAnimation then
-        local status, err = pcall(function()
-            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[4].title, Config.Locale.GAME.message_error[4].description)
-        end)
-        logError('ClientOnNotify', err)
-    else
-        isArmour = false
-        isAnimation = true
+    isArmour = false
+    isAnimation = true
 
-        TriggerServerEvent(script_name .. ':removeItem', item)
+    TriggerServerEvent(script_name .. ':removeItem', item)
 
-        local status, err = pcall(function()
-            Config.CustomProgressbarOnUseItem(item)
-        end)
-        logError('CustomProgressbarOnUseItem', err)
+    local status, err = pcall(function()
+        Config.CustomProgressbarOnUseItem(item)
+    end)
+    logError('CustomProgressbarOnUseItem', err)
 
-        local playerPed = PlayerPedId()
-        ESX.Streaming.RequestAnimDict(Config.Animation.Dict, function()
-            TaskPlayAnim(playerPed, Config.Animation.Dict, Config.Animation.Name, 3.0, 3.0, item.AnimDuration, 51, 0, false, false, false)
-        end)
-        Citizen.Wait(item.AnimDuration)
+    local playerPed = PlayerPedId()
+    ESX.Streaming.RequestAnimDict(Config.Animation.Dict, function()
+        TaskPlayAnim(playerPed, Config.Animation.Dict, Config.Animation.Name, 3.0, 3.0, item.AnimDuration, 51, 0, false, false, false)
+    end)
+    Citizen.Wait(item.AnimDuration)
 
-        SetPedArmour(playerPed, item.ArmourHealth)
-        isAnimation = false
-        if item.Uniforms.enable then
-            local uniforms = item.Uniforms.default
-            if ESX.GetPlayerData().job.name ~= 'unemployed' then
-                uniforms = item.Uniforms.jobs[ESX.GetPlayerData().job.name]
-                if uniforms == nil then
-                    uniforms = item.Uniforms.default
-                end
+    SetPedArmour(playerPed, item.ArmourHealth)
+    isAnimation = false
+    if item.Uniforms.enable then
+        local uniforms = item.Uniforms.default
+        if ESX.GetPlayerData().job.name ~= 'unemployed' then
+            uniforms = item.Uniforms.jobs[ESX.GetPlayerData().job.name]
+            if uniforms == nil then
+                uniforms = item.Uniforms.default
             end
+        end
 
-            TriggerEvent(Config.EventRoute['getSkin'], function(skin)
-                local sex = skin.sex == 0 and 'male' or 'female'
-                TriggerEvent(Config.EventRoute['loadClothes'], skin, {
-                    ["bproof_1"] = uniforms[sex].Bproof_1,
-                    ["bproof_2"] = uniforms[sex].Bproof_2
-                })
-                log('update skin')
-            end)
-            isArmour = true
-            while isArmour do
-                local pedArmour = GetPedArmour(PlayerPedId())
-                if pedArmour <= 0 then
-                    isArmour = false
-                    TriggerEvent(Config.EventRoute['getSkin'], function(skin)
-                        TriggerEvent(Config.EventRoute['loadClothes'], skin, {
-                            bproof_1 = 0,
-                            bproof_2 = 0
-                        })
-                    end)
-                end
-                Citizen.Wait(500)
+        TriggerEvent(Config.EventRoute['getSkin'], function(skin)
+            local sex = skin.sex == 0 and 'male' or 'female'
+            TriggerEvent(Config.EventRoute['loadClothes'], skin, {
+                ["bproof_1"] = uniforms[sex].Bproof_1,
+                ["bproof_2"] = uniforms[sex].Bproof_2
+            })
+            log('update skin')
+        end)
+        isArmour = true
+        while isArmour do
+            local pedArmour = GetPedArmour(PlayerPedId())
+            if pedArmour <= 0 then
+                isArmour = false
+                TriggerEvent(Config.EventRoute['getSkin'], function(skin)
+                    TriggerEvent(Config.EventRoute['loadClothes'], skin, {
+                        bproof_1 = 0,
+                        bproof_2 = 0
+                    })
+                end)
             end
+            Citizen.Wait(500)
         end
     end
 end
