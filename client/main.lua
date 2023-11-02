@@ -2,72 +2,39 @@ ESX = Config.Framework()
 local isAnimation = false
 local isArmour = false
 
+local itemNameList = {}
+
+Citizen.CreateThread(function()
+    for k, v in pairs(Config.ItemUse) do
+        itemNameList[v.ItemName] = v
+    end
+end)
+
 exports('OnUseItem', function(ItemName)
-    if not Config.ClientUseItem then
+    if Config.ClientUseItem == nil or Config.ClientUseItem == false then
         return false
     end
 
-    local isCheckItem = false
-    local item = nil
-    for k, v in pairs(Config.ItemUse) do
-        if v.ItemName == ItemName then
-            isCheckItem = true
-            item = v
-            break
-        end
+    local item = itemNameList[ItemName]
+
+    if item == nil then
+        return false
     end
 
-    if isCheckItem then
-        CheckItemPermission(item)
-    end
-    return isCheckItem
-end)
-
-function CheckItemPermission(item)
-    local isPass = false
-    if item.Jobs.type == 'whitelist' then
-        if item.Jobs.list[ESX.GetPlayerData().job.name] then
-            isPass = true
-        end
-    elseif item.Jobs.type == 'blacklist' then
-        if not item.Jobs.list[ESX.GetPlayerData().job.name] then
-            isPass = true
-        end
-    else
-        local status, err = pcall(function()
-            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[3].title, Config.Locale.GAME.message_error[3].description)
-        end)
-        logError('ClientOnNotify', err)
-        return
+    if not CheckItemPermission(item) then
+        return false
     end
 
-    if isPass then
+    if not checkZone(item) then
+        return false
+    end
+
+    Citizen.CreateThread(function()
         OnUseItem(item)
-    else
-        local status, err = pcall(function()
-            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[2].title, Config.Locale.GAME.message_error[2].description)
-        end)
-        logError('ClientOnNotify', err)
-    end
-end
+    end)
 
-function checkZone(zone)
-    local isPass = false
-    if #zone == 0 then
-        isPass = true
-    else
-        for k, v in pairs(zone) do
-            local playerPed = PlayerPedId()
-            local coords = GetEntityCoords(playerPed)
-            local distance = GetDistanceBetweenCoords(coords, v[1], false)
-            if distance <= v[2] then
-                isPass = true
-                break
-            end
-        end
-    end
-    return isPass
-end
+    return true
+end)
 
 RegisterNetEvent(script_name .. ':onUseItem', function(item)
     OnUseItem(item)
@@ -131,4 +98,78 @@ function OnUseItem(item)
             end
         end
     end
+end
+
+function CheckItemPermission(item)
+    local isPass = false
+    if item.Jobs.type == 'whitelist' then
+        if item.Jobs.list[ESX.GetPlayerData().job.name] then
+            isPass = true
+        end
+    elseif item.Jobs.type == 'blacklist' then
+        if not item.Jobs.list[ESX.GetPlayerData().job.name] then
+            isPass = true
+        end
+    else
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[3].title, Config.Locale.GAME.message_error[3].description)
+        end)
+        logError('ClientOnNotify', err)
+        return
+    end
+
+    if not isPass then
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[2].title, Config.Locale.GAME.message_error[2].description)
+        end)
+        logError('ClientOnNotify', err)
+    end
+
+    return isPass
+end
+
+function checkZone(item)
+    local zoneUse = item.Zone.list
+
+    local isPass = false
+    if item.Zone.type == 'whitelist' then
+        if isPlayerInZone(zoneUse) then
+            isPass = true
+        end
+    elseif item.Zone.type == 'blacklist' then
+        if not isPlayerInZone(zoneUse) then
+            isPass = true
+        end
+    else
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[9].title, Config.Locale.GAME.message_error[9].description)
+        end)
+        logError('ClientOnNotify', err)
+        return
+    end
+
+    if not isPass then
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[8].title, Config.Locale.GAME.message_error[8].description)
+        end)
+        logError('ClientOnNotify', err)
+    end
+
+    return isPass
+end
+
+function isPlayerInZone(zone)
+    if #zone == 0 then
+        return false
+    end
+
+    for k, v in pairs(zone) do
+        local playerPed = PlayerPedId()
+        local coords = GetEntityCoords(playerPed)
+        local distance = GetDistanceBetweenCoords(coords, v[1], false)
+        if distance <= v[2] then
+            return true
+        end
+    end
+    return false
 end

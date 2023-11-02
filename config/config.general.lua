@@ -51,12 +51,18 @@ Config.ItemUse = {
         ItemCount = 1,                                  -- จำนวนไอเทมที่ต้องใช้
         ArmourHealth = 100,                             -- ค่าเกราะที่ต้องการให้เพิ่มหลังใช้งาน
         AnimDuration = 3000,                            -- เวลาในการทำ Animation สวมเสื้อเกราะ
-        LoadingLabel = 'กำลังสวมเกราะน้า',                 -- ข้อความหลอดโหลดขณะกำลังสวมเสื้อเกราะ
+        LoadingLabel = 'กำลังสวมเกราะน้า',                  -- ข้อความหลอดโหลดขณะกำลังสวมเสื้อเกราะ
         Jobs = {
             type = 'blacklist',                         -- ชนิดของ List ที่ต้องการ (whitelist|blacklist)
             list = {
                 ['ambulance']   = true,
                 ['police']      = true,
+            }
+        },
+        Zone = {                                                --- กำหนดโซนที่สามารถ ใช้ หรือ ห้ามใช้
+            type = 'blacklist',                                 -- ชนิดของ List ที่ต้องการ (whitelist = อนุญาติให้ใช้ | blacklist = ไม่อนุญาติให้ใช้)
+            list = {
+                --{ vector3(1151.68, 124.36, 82.12), 10 }       -- รูปแบบ { <ตำแหน่ง> , <ขนาดวง> }
             }
         },
         Uniforms = {                                    -- ปรับ Skin เสื้อเกราะ
