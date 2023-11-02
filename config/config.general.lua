@@ -22,7 +22,7 @@ Config.EventRoute = {
 
 Config.Debug = true                                     -- Debug Mode (true: แสดง log | false: ไม่แสดง log)
 
-Config.ClientUseItem = true                             -- เปิดใช้งานกดใช้ไอเทม C > C ไม่ผ่าน Server (true: เปิด | false: เปิด) *** จำเป็นต้องนำ export ไปเชื่อมกับกระเป๋า
+Config.ClientUseItem = false                            -- เปิดใช้งานกดใช้ไอเทม C > C ไม่ผ่าน Server (true: เปิด | false: เปิด) *** จำเป็นต้องนำ export ไปเชื่อมกับกระเป๋า
 --- วิธีเชื่อมกับกระเป๋า NC เพื่อใช้งานการกดใช้ไอเทมแบบ Client > Client เพื่อลด delay
 --- ไปที่ Config.ClientWillUseItem ในไฟล์ config.functions.client.lua (ของ nc_inventory)
 --- แล้วนำ exports.cc_armour:OnUseItem(itemName) ไปใส่
