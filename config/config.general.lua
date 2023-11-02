@@ -36,7 +36,7 @@ Config.ClientWillUseItem = function(itemName, itemType, shortcut)
 end
 ]]--
 
-Config.Animation = {                                    -- Custom Animation ขณะเสื้อเสื้อเกราะ
+Config.Animation = {                                    -- Custom Animation ขณะสวมเสื้อเกราะ
     Dict = 'clothingtie',
     Name = 'try_tie_negative_a'
 }
@@ -48,6 +48,7 @@ Config.ItemUse = {
         ArmourHealth = 100,                             -- ค่าเกราะที่ต้องการให้เพิ่มหลังใช้งาน
         AnimDuration = 3000,                            -- เวลาในการทำ Animation สวมเสื้อเกราะ
         LoadingLabel = 'กำลังสวมเกราะน้า',                   -- ข้อความหลอดโหลดขณะกำลังสวมเสื้อเกราะ
+        EnableUseItemInAnyVehicle = false,              -- สามารถใช้ไอเทมขณะอยู่บนรถได้หรือไม่ (true: ใช้ไอเทมบนรถได้ | false: ใช้ไอเทมบนรถไม่ได้)
         Jobs = {
             type = 'blacklist',                         -- ชนิดของ List ที่ต้องการ (whitelist|blacklist)
             list = {

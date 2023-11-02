@@ -12,28 +12,12 @@ end)
 
 exports('OnUseItem', function(ItemName)
     if Config.ClientUseItem == nil or Config.ClientUseItem == false then
-        return false
+        return true
     end
 
     local item = itemNameList[ItemName]
 
     if item == nil then
-        return false
-    end
-
-    if isAnimation then
-        local status, err = pcall(function()
-            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[4].title, Config.Locale.GAME.message_error[4].description)
-        end)
-        logError('ClientOnNotify', err)
-        return false
-    end
-
-    if not CheckItemPermission(item) then
-        return false
-    end
-
-    if not checkZone(item) then
         return false
     end
 
@@ -49,6 +33,30 @@ RegisterNetEvent(script_name .. ':onUseItem', function(item)
 end)
 
 function OnUseItem(item)
+    if IsPedSittingInAnyVehicle(GetPlayerPed(-1)) then
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[5].title, Config.Locale.GAME.message_error[5].description)
+        end)
+        logError('ClientOnNotify', err)
+        return
+    end
+
+    if isAnimation then
+        local status, err = pcall(function()
+            Config.ClientOnNotify('warning', 4000, Config.Locale.GAME.message_error[4].title, Config.Locale.GAME.message_error[4].description)
+        end)
+        logError('ClientOnNotify', err)
+        return
+    end
+
+    if not CheckItemPermission(item) then
+        return
+    end
+
+    if not checkZone(item) then
+        return
+    end
+
     isArmour = false
     isAnimation = true
 
